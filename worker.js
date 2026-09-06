@@ -1,14 +1,7 @@
-const SOURCE = "https://raw.githubusercontent.com/weiddddd/italy-trio-uk-trip/main/uk-trip-handbook.html";
-const PATCH = String.raw`<script>
-(() => {
- const icon='<svg class="person-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M6.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6"/></svg>';
- const travelers=document.querySelector('.travelers');
- if(travelers){travelers.innerHTML='<span class="person-chip">'+icon+'左一</span><span class="person-chip">'+icon+'小李</span><span class="person-chip">'+icon+'达达</span><span class="trip-label">｜ 英国十日旅行</span>';}
- const style=document.createElement('style');style.textContent='.travelers{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:13px}.person-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 7px 3px 4px;border:1px solid #ffffffbb;border-radius:99px;background:#fffdf8aa}.person-mark{width:20px;height:20px;padding:4px;border-radius:50%;background:var(--soft);stroke:var(--accent2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.trip-label{color:var(--muted)}';document.head.append(style);
- const old=[...document.querySelectorAll('.booking')].find(x=>x.textContent.includes('酒店与城际交通'));
- if(old)old.outerHTML='<article class="booking"><div class="booking-head"><h3>9/27 伦敦酒店 · Crowne Plaza London Heathrow T4</h3><span class="tag">已确认 · 1晚</span></div><p>9月27日（周日）入住 → 9月28日（周一）退房；15:00 后入住，12:00 前退房。<a class="place" href="https://www.google.com/maps/dir/?api=1&destination=Crowne+Plaza+London+Heathrow+T4" target="_blank" rel="noopener">Heathrow Airport, Terminal 4, Swindon Road, Hillingdon, London TW6 3FJ</a></p><p>标准特大床房（1.81m 特大床）；订单含每间每晚 1 份早餐。酒店提供 24 小时前台、免费行李寄存与内部停车场。</p></article><article class="booking"><div class="booking-head"><h3>其余住宿与城际交通</h3><span class="tag">待补充</span></div><p>当前路线单向串联：伦敦 → 剑桥 → 爱丁堡 → 牛津 → 伦敦；未假定已租车。</p></article>';
- const day=[...document.querySelectorAll('.day')].find(x=>x.querySelector('.date')?.textContent.includes('9/27'));
- if(day){day.querySelector('.day-title small').textContent='夜宿：Crowne Plaza London Heathrow T4';day.querySelector('.open-route').href='https://www.google.com/maps/dir/?api=1&origin=Heathrow+Airport+Terminal+2&destination=Crowne+Plaza+London+Heathrow+T4';day.querySelector('.open-route').textContent='打开当天路线：希思罗 T2 → Crowne Plaza Heathrow T4';day.querySelector('.timeline').innerHTML='<div class="item"><span class="time">20:00 BST（UTC+1）</span><p>抵达希思罗 T2，入境、取行李后前往 Crowne Plaza London Heathrow T4。</p></div><div class="item"><span class="time">晚间</span><p>15:00 后可办理入住；只安排酒店附近晚餐。</p></div>';}
- document.querySelectorAll('.todo li').forEach(x=>{if(x.textContent.includes('核实 9/27 Crowne'))x.remove()});
-})();<\/script>`;
-export default {async fetch(){const html=await (await fetch(SOURCE)).text();return new Response(html.replace('</body>',PATCH+'</body>'),{headers:{'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=300'}})}};
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === "/") url.pathname = "/uk-trip-handbook.html";
+    return env.ASSETS.fetch(new Request(url, request));
+  },
+};
